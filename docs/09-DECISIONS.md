@@ -1161,13 +1161,12 @@ now.
 
 ## ADR-034 — Repo: one repo, history preserved on a branch
 
-**Status:** ⏳ **IN PROGRESS 2026-08-25.** Repo renamed to `Rik-Mukh/rikmukh.online`
-(step 3 ✓); Astro scaffolded + flattened (steps 1–2 ✓); v4 **committed locally** as
-`b4e2008` (step 4, local part ✓). **The two pushes are pending Rik** — the sandboxed
-build shell has no GitHub credentials, so Rik runs them in his authenticated terminal:
-(a) `git push origin origin/main:legacy/v2-nextjs` to preserve v2, then
-(b) `git push --force origin main` to publish v4. Step 5 (Vercel preset → Astro) is also
-Rik's. · **Supersedes ADR-032's execution plan**
+**Status:** ✅ **DONE 2026-08-25.** All steps executed and verified. Repo renamed to
+`Rik-Mukh/rikmukh.online`; Astro scaffolded + flattened; v2 preserved on remote branch
+`legacy/v2-nextjs` (`fb3008`); v4 published to `main` (`020d4c7`); Vercel building Astro
+and serving the default page at `rikmukh.online`. Verified: private files
+(`resume-source.pdf`, `scratch.txt`) are **not** in the published tree. · **Supersedes
+ADR-032's execution plan**
 
 **Context.** Rik proposed two paths: keep `portfolio` as the v2 artifact and move the
 Vercel plumbing to a new v4 repo; or move v2's code to a new repo and overwrite

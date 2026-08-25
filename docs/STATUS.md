@@ -8,27 +8,34 @@
 
 ---
 
+## Repo & deploy — DONE (2026-08-25)
+
+Repo `Rik-Mukh/rikmukh.online`: `main` = v4 Astro scaffold + docs (`020d4c7`);
+`legacy/v2-nextjs` = old Next.js v2 (`fb3008`). Vercel builds Astro; `rikmukh.online`
+serves the default starter page (real content is Phase 0 proper). Verified: no private
+files in the published tree. Commit author is `rikmukherji05@gmail.com`.
+
 ## Next concrete actions
 
 1. **Write `docs/prd/`** — one PRD per phase (problem, scope, out-of-scope, numbered
    requirements, data contracts, acceptance criteria, test plan). Start `prd/P0-foundations.md`.
 2. **Write `docs/tasks/`** — atomic tasks from the PRDs, each one agent-session / one
    reviewable diff, each carrying its class + model and inlining the rules it needs.
-3. **Begin Phase 0** — `git init` history per ADR-034, Astro + TS strict, `tokens.css`,
-   Content Graph schemas + Zod, placeholder content, Document Mode incl. the hero,
-   `prefs.ts` (7 prefs), generated `/resume.pdf`, CI, deploy to Vercel.
+3. **Build Phase 0** — `tokens.css`, Content Graph schemas + Zod, placeholder content,
+   Document Mode incl. the hero, `prefs.ts` (7 prefs), generated `/resume.pdf`, CI. The
+   Astro project, Node pin, and deploy already exist.
 
 Phase 0 can be built almost entirely before Rik's content lands. Do not wait.
 
 ## Waiting on Rik — remind every turn (his instruction)
 
-1. **Execute the repo plan** (ADR-034) — approved; needs his go-ahead **and the new repo
-   name** (likes `rikmukh.online`; not keeping "portfolio"). Nothing touched yet.
+1. **Write PRDs + tasks** (next actions 1–2) — he asked to hold; needs his go-ahead.
 2. **Re-theme the 18 storyboard frames** into the ADR-033 idiom — on hold until visual
    language + story are locked.
-3. **Write PRDs + tasks** (action 1–2 above) — he asked to hold.
-4. **His reference board** — real architecture photos (author references, not depiction
+3. **His reference board** — real architecture photos (author references, not depiction
    targets; ADR-036).
+4. **Small cleanups awaiting his call:** replace Astro's default `README.md` with a real
+   one; remove the stray `allowScripts` field in `package.json`.
 
 ## Also open / needs Rik
 

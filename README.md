@@ -1,43 +1,39 @@
-# Astro Starter Kit: Minimal
+# rikmukh.online
+
+Rik Mukherji's personal site — live at **[rikmukh.online](https://rikmukh.online)**.
+
+It is one body of content rendered two ways:
+
+- **Document Mode** — a fast, semantic, near-zero-JavaScript page. The default, and the
+  version search engines, screen readers, and anyone in a hurry see.
+- **World Mode** — an authored 3D point-cloud journey, entered by choice.
+
+Both are generated from a single content graph, so they can never drift apart.
+
+> **Status: in active development.** The full design — vision, narrative, art direction,
+> accessibility, architecture — lives in [`docs/`](./docs). Start with
+> [`AGENTS.md`](./AGENTS.md) for orientation and [`docs/STATUS.md`](./docs/STATUS.md) for
+> current state.
+
+## Stack
+
+Astro · TypeScript (strict) · React Three Fiber + Three.js (World Mode) · deployed on
+Vercel.
+
+## Local development
+
+Requires **Node 22+** (pinned via [`mise`](https://mise.jdx.dev) / `.nvmrc`).
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install      # install dependencies
+npm run dev      # start the dev server at localhost:4321
+npm run build    # build the static site to dist/
+npm run preview  # preview the production build locally
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Repository notes
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
-
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
-
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- `docs/` is the specification and the source of truth for every decision
+  (`docs/09-DECISIONS.md` is the decision log).
+- The previous Next.js version of this site is preserved on the `legacy/v2-nextjs`
+  branch.
