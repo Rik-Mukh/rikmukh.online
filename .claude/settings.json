@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(codex exec:*)"
+    ],
+    "deny": [
+      "Read(./resume-source.pdf)",
+      "Read(./scratch.txt)",
+      "Read(./docs/storyboard/**)"
+    ]
+  }
+}

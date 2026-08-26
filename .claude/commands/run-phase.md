@@ -45,9 +45,21 @@ Run the build and the test suites now, before anything else, so you know which f
 inherited. Report real output. State which of the phase's prerequisites are genuinely done
 and which only look done.
 
-## Step 3 — Decompose (STOP for approval)
+## Step 3 — Decompose, or resume (STOP for approval)
 
-Enter Plan Mode. Present:
+**First, check whether this phase was already decomposed.** If `docs/tasks/P<phase>-*` files
+exist, you are **resuming**, not starting. Do not re-decompose and do not rewrite briefs that
+are already approved.
+
+Instead, establish the true state of each existing task by looking at the repository, not at
+`STATUS.md`: which are done and verified, which have a diff that never passed review, which
+were never dispatched. Present that as a short table, say what you intend to do next, and get
+Rik's confirmation before dispatching. Then go to Step 5.
+
+Re-decompose only if the phase's requirements changed — and if they did, that is an ADR, not
+a silent rewrite.
+
+**Otherwise, decompose from scratch.** Enter Plan Mode and present:
 
 - **Requirement coverage.** Every ID from Step 1, mapped to exactly one task. An ID with no
   task is a gap; a task with no ID is scope creep. **Report both.**
@@ -178,10 +190,18 @@ to you; it never edits code.
    an unsigned one is **not** complete. Say so plainly.
 4. **Report:** Done (with evidence) · Failing (with real output) · Blocked on Rik (specific
    questions, with artifact paths) · Next (the single next action).
-5. Do not commit unless Rik asks.
+5. **State plainly whether the phase is complete or not**, and if not, exactly what remains.
+   A phase with an unsigned JUDGED criterion is **not complete** — say so rather than
+   implying it.
+6. Do not commit unless Rik asks.
 
 Never mark an exit criterion met without running it. Never report a phase done with an
 unsigned `[R]`/JUDGED criterion. Never round up.
+
+If you are running out of context before the phase is done, **stop cleanly**: finish
+reviewing whatever is already dispatched, write the true state into `STATUS.md`, and report
+that the phase needs another session. A phase half-closed with a stale `STATUS.md` is the
+worst outcome available, because the next session starts from a lie.
 
 Reminder: `/effort high` before invoking this. Decomposition quality is the main determinant
 of output quality, and a command cannot set its own effort.
