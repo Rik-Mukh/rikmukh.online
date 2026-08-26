@@ -113,8 +113,9 @@ and are not — see `docs/11-AGENT-PROTOCOL.md` §Do not "fix" the specification
 - TypeScript `strict`. No `any` without a comment explaining why.
 - Conventional commits, scoped by area, phase-tagged:
   `feat(engine/spine): arc-length parameterization (P2)`.
-- Never commit or push unless Rik asks. Branch rather than committing to the
-  default branch.
+- Never commit or push unless Rik asks. **Phase work runs on `phase/<n>-<slug>`**
+  (ADR-052); planning and specification sessions commit to `main` directly. Never merge
+  a phase branch unasked.
 - Append-only decision log. Supersede, never edit.
 - Rewrite `docs/STATUS.md` every session.
 - Screenshots for Rik go to `artifacts/<phase>/`, named for the question they

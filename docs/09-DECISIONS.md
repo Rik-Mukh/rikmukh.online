@@ -2071,6 +2071,20 @@ the Codex CLI (preserves the routing exactly).
    gate (`11-AGENT-PROTOCOL.md`), and an **independent Claude reviewer** that did not write
    the code.
 
+> **Amended 2026-08-26 by Rik.** The independent reviewer is **`/code-review`**, configured
+> by **`REVIEW.md`** at the repository root — not a hand-rolled subagent. Three reasons:
+> it runs in its own context window, which protects the orchestrator context ADR-050 exists
+> to preserve; it follows a fixed find → verify → deduplicate → rank → report pipeline
+> rather than improvising; and `REVIEW.md` lets the scope and the invariants be stated once,
+> where the reviewer reads them, instead of being restated in every dispatch.
+>
+> **Its limitation, recorded so nobody over-trusts it.** `/code-review` reads the branch's
+> commits plus uncommitted changes. In a wave where several Codex processes edited one
+> shared working tree, those diffs are **mixed together and it cannot isolate them per
+> task.** Therefore the orchestrator still does the **per-task file-boundary check** and
+> still **runs the acceptance commands itself.** `/code-review` supplements the gate; it
+> does not replace it.
+
 **The reviewer is deliberately narrow.** A reviewer told to find problems will find some even
 when the work is sound, and the orchestrator then burns cycles on invented findings. So it is
 scoped to exactly three things:
@@ -2097,6 +2111,36 @@ worst available judge of it.
 - **Blocked:** the exact non-interactive Codex invocation is not recorded anywhere. Until Rik
   supplies it, `/run-phase` cannot dispatch. **Do not guess a command line** — a wrong one
   produces nothing and looks like an agent failure.
+
+---
+
+## ADR-052 — Phase work happens on a branch
+
+**Status:** Accepted · **Decided by Rik, 2026-08-26** · **Makes `AGENTS.md`'s branching rule
+specific**
+
+**Context.** `AGENTS.md` said "branch rather than committing to the default branch" without
+saying what a branch corresponds to, and two planning commits went straight to `main` before
+this was settled.
+
+**Decision.**
+
+- **Phase work runs on `phase/<n>-<slug>`** — e.g. `phase/0-foundations` — merged to `main`
+  when the phase closes.
+- **Planning and specification sessions commit to `main` directly.** Writing an ADR, a PRD, or
+  correcting a document does not need a branch; there is no code to discard.
+
+**Why a branch, and it is not process hygiene.** Codex runs with `workspace-write` and edits
+the working tree directly, several processes at a time. **A bad wave needs a clean discard
+point.** On `main`, a wave that goes wrong is entangled with work that did not, and untangling
+it by hand is exactly the kind of quiet damage the review gate exists to prevent. A branch
+makes "throw this away and re-scope" a one-line operation.
+
+**Consequences.**
+- `/run-phase` creates the branch as its first action and reports it, so a session that dies
+  leaves an obvious place to resume.
+- Merging is Rik's call, like every commit and push. The orchestrator never merges unasked.
+- A phase spanning several sessions reuses its existing branch rather than making a new one.
 
 ---
 

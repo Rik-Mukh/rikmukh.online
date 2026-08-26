@@ -36,7 +36,17 @@ Check the ADR status of anything you rely on. `09-DECISIONS.md` opens with a sta
 vocabulary. Do not treat an `UNRATIFIED` or `Claude's call` ADR as immovable; do not
 relitigate a `Decided by Rik` one.
 
-## Step 2 — Reconcile reality
+## Step 2 — Branch, then reconcile reality
+
+**Phase work happens on `phase/<n>-<slug>`** (ADR-052) — e.g. `phase/0-foundations`. Create it
+now and report the name, so a session that dies leaves an obvious place to resume. If the
+branch already exists you are resuming: check it out and reuse it. **Never merge it — that is
+Rik's call, like every commit.**
+
+Codex runs with `workspace-write` and edits the tree directly, several processes at a time. The
+branch is the clean discard point for a wave that goes wrong.
+
+Then reconcile:
 
 `STATUS.md` records beliefs; the repository records facts. When they disagree, the repository
 wins and `STATUS.md` gets corrected.
@@ -143,20 +153,15 @@ For each wave:
 **You verify; you do not trust.** An agent reporting success is evidence, not proof — and the
 agent that wrote the code is the worst available judge of it.
 
-**Pass 1 — an independent Claude reviewer** that did not write the code (ADR-051). Scope it
-to exactly three things and say so in its prompt, because a reviewer told to find problems
-will invent them:
+**Pass 1 — `/code-review`** (ADR-051). It runs in its own context window, which protects yours,
+and it reads `REVIEW.md` at the repository root for its scope, the project's invariants, and
+the list of things that look like bugs and are not. **Do not restate that scope in the
+invocation** — `REVIEW.md` carries it.
 
-- **Correctness** — does it do what the brief said?
-- **Requirement coverage** — is every acceptance criterion actually met, and is any inlined
-  invariant violated?
-- **Quiet damage** — a weakened or deleted test, a silent dependency, a touched forbidden
-  file, a "fix" applied to something deliberate.
+Its findings are advisory to you. It never edits code, and it cannot isolate per-task diffs in
+a shared working tree — so it supplements the gate below rather than replacing it.
 
-It must **not** review style, naming, or architectural preference. Its findings are advisory
-to you; it never edits code.
-
-**Pass 2 — your own gate.** Per diff:
+**Pass 2 — your own gate, which `/code-review` cannot do for you.** Per diff:
 
 1. Read the entire diff, not a summary of it.
 2. Run every acceptance-criterion command yourself and see it pass. Paste real output.

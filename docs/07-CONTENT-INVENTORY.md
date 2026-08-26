@@ -137,6 +137,24 @@ When a build session needs content that does not exist yet:
    Preview builds allow them.
 5. Record it in `STATUS.md` under "Blocked on Rik."
 
+## How R→C prose gets reviewed (decided by Rik, 2026-08-26)
+
+Roughly twenty pieces of prose are **R→C** — Claude drafts from the résumé, Rik approves. Each
+is a JUDGED criterion under ADR-048, so twenty separate approvals would mean twenty
+interruptions.
+
+Instead:
+
+1. **The schemas are built first**, so drafted prose lands straight into the Content Graph and
+   needs no reshaping.
+2. **Claude drafts every piece**, then produces **one review artifact** with all of it laid out
+   beside the source résumé line it came from.
+3. **Rik approves or strikes in a single pass.**
+
+The no-slop rule (`00-VISION.md` §Voice) applies to every line: would Rik say this sentence to
+a person, and does it mean something specific? When in doubt, say less. A hollow line is worse
+than a missing one — so a struck line may simply be deleted rather than rewritten.
+
 ## Structure per collection
 
 Authoritative schemas live in `src/content/config.ts`. Shape:

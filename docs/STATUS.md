@@ -48,9 +48,21 @@ one place it is most expensive.
   a session died mid-phase with briefs already on disk.
 
 **Dispatch (ADR-051): Codex implements, Claude reviews.** Codex CLI runs each brief per
-ADR-020's routing. Every returned diff gets two passes — an independent Claude reviewer
-scoped to correctness, requirement coverage, and quiet damage only, then the orchestrator's
-own review gate. The reviewer never edits code and never reviews style.
+ADR-020's routing. Every returned diff gets two passes:
+
+1. **`/code-review`**, configured by **`REVIEW.md`** at the repo root — its own context window,
+   scoped to correctness, requirement coverage, and quiet damage only. `REVIEW.md` also carries
+   the things that look like bugs and are not, so it does not flag the deliberate
+   incompleteness. It **cannot** isolate per-task diffs in a shared tree.
+2. **The orchestrator's own gate** — the per-task file-boundary check and running every
+   acceptance command. `/code-review` supplements this; it never replaces it.
+
+**Branching (ADR-052):** phase work runs on `phase/<n>-<slug>`; planning sessions commit to
+`main`. `/run-phase` creates the branch first and never merges it.
+
+**R→C prose (07 §How R→C prose gets reviewed):** schemas first, then Claude drafts all ~20
+pieces, then **one** review artifact laid out beside the source résumé lines — one sitting, not
+twenty interruptions.
 
 ### The Codex invocation — recorded 2026-08-26
 
