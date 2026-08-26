@@ -37,12 +37,11 @@ world should be rejected on both art-direction and performance grounds.
 | Document Mode — client JS | ≤ 5 KB gzipped (prefs only) |
 | Document Mode — Lighthouse Performance | ≥ 98 |
 | `/` hero — first paint | < 800ms |
-| `/` hero point-cloud — JS cost | must fit inside the 5 KB Document Mode budget, or be pre-rendered (ADR-024) |
+| `/` hero point-cloud — JS cost | shares the 5 KB Document Mode budget with `prefs.ts`. Vanilla canvas 2D, positions sampled from rendered text so no coordinate table ships (ADR-042). If the measured total exceeds 5 KB, the hero degrades to a pre-rendered loop — **the budget does not move.** |
 | World Mode — first meaningful frame | < 3.0s on cable |
 | World Mode — island JS | ≤ 200 KB gzipped |
 | Initial transfer, total, World Mode | ≤ 6 MB |
 | Per-Station streamed assets | ≤ 1.5 MB |
-| Audio, per stem | ≤ 400 KB, Opus |
 
 Document Mode's budget is deliberately brutal. It is the version most hiring
 decisions are made from, and it should be one of the fastest sites its readers
@@ -111,6 +110,11 @@ Mobile is where a project like this normally dies, and an ignored mobile experie
 one of the loudest "AI-slop" tells. **The phone experience is designed, not degraded.**
 The reduced feature set is authored on purpose; what remains must feel deliberate.
 
+**The journey is whole (ADR-043).** All eight acts, every Station, and the Reach are
+present on mobile. What reduces is fidelity and population, never narrative. Every
+Station being reachable and the Reach being operable on a mobile viewport are asserted
+in the e2e suite, not left to a device check.
+
 - Point budget `low` or `minimal`.
 - Shorter free-look clamps; device orientation off by default.
 - No bloom.
@@ -138,9 +142,10 @@ The reduced feature set is authored on purpose; what remains must feel deliberat
 | No per-frame allocation | heap sampling over 600 frames | yes |
 | Total initial transfer | build manifest sum | yes |
 
-Traversals must be deterministic — seeded randomness and an injectable clock
-(`05-ARCHITECTURE.md` §Testing). Non-deterministic perf tests are worse than none
-in a looped build, because they teach a session to ignore red.
+Traversals must be deterministic — seeded randomness app-side, with time controlled
+externally by Playwright's Clock API rather than by an engine-side injectable clock
+(ADR-026; `05-ARCHITECTURE.md` §Testing). Non-deterministic perf tests are worse than
+none in a looped build, because they teach a session to ignore red.
 
 ## When a budget is exceeded
 

@@ -52,6 +52,13 @@
 > **Session 5:** 033 visual language · 034 repo plan *(locked)* · 035 Mirrors corrected
 > · 036 visual restraint
 >
+> **Session 8 (2026-08-25):** 041 contact has no form · 042 the hero point-cloud
+> technique · 043 mobile gets the whole journey · 044 substance first, craft as the frame
+> · 045 the ending offers ways onward · 046 one privacy-respecting measurement ·
+> 047 Second Sight ratified · 048 acceptance-criteria taxonomy · 049 accessibility target
+> not a conformance claim. All nine close gaps found while preparing `docs/prd/`.
+> **There are no Open questions left.**
+>
 > **Session 6 (2026-08-23):** 037 codebase quality · 038 mobile first-class · 039 crowd
 > figures · 040 native-scroll preference. This session also **ratified** 010, 011
 > (provisional), 014, 022, 025, 027, 028, 029, and confirmed the Unconfirmed-inventions
@@ -1136,9 +1143,8 @@ appropriation. That does not remove the craft obligation:
 latter is a Western fantasy trope — genie lamps, magic carpets, onion domes as
 shorthand — and it would directly undercut `00-VISION.md`'s stated value that the site
 feel authentic and made with care. Every authored form should trace to a named
-building. The reference board (`storyboard/SHOT-LIST.md` §Tools) is now the
-highest-value artifact Rik can produce, and it should be photographs of real
-architecture.
+building. A board of real architecture photographs is the highest-value reference Rik can
+produce, and it is his to assemble.
 
 ### Typography
 
@@ -1150,8 +1156,9 @@ now.
 ### Consequences
 
 - `03-ART-DIRECTION.md` gains a §Visual language section.
-- **All eighteen frames in `storyboard/SHOT-LIST.md` are described in the old
-  abstract idiom and must be re-described.** New task, before any blockout work.
+- **Any pre-existing visual planning that predates this ADR uses the old abstract idiom
+  and does not describe the current visual language.** Build from §Per-act forms in
+  `03-ART-DIRECTION.md` instead.
 - ADR-012's Blender blockouts get much easier to author — modular geometric
   architecture tiles, rather than invented abstract forms.
 - The density grammar benefits: jali screens and muqarnas are *natural* density
@@ -1621,6 +1628,478 @@ settings like the others (ADR-018).
 
 ---
 
+## ADR-041 — Contact is an address and two links. There is no form.
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25** · **Supersedes
+`04-ACCESSIBILITY.md` §Forms and contact**
+
+**Context.** `04-ACCESSIBILITY.md` specified real `<label>` elements, inline adjacent
+error messages, and a no-CAPTCHA rule — all of which presuppose a form that submits
+somewhere. But the site is static output with no runtime API calls permitted
+(`11-AGENT-PROTOCOL.md` §Never do these), so that section described a feature the
+architecture forbids. The contradiction had gone unnoticed because nobody had tried to
+build the contact surface yet.
+
+**Options.** (a) No form — a plain selectable email address plus GitHub and LinkedIn.
+(b) A form posting to a third-party endpoint (Formspree, a Vercel function).
+(c) Both, with the address as a visible fallback.
+
+**Decision.** (a).
+
+**Why.**
+- It is the only option that needs no ADR-breaking exception. (b) and (c) both
+  introduce a runtime dependency on an external service and a privacy surface, for a
+  recruiter-convenience gain that is marginal when the address is one click to copy.
+- **It is what the narrative already asked for.** `01-NARRATIVE.md` Act 7 specifies the
+  contact information arriving "framed as the reach continuing outward rather than as a
+  form." A form at the Reach would be the single most tone-deaf object in the site.
+- Nothing to spam, nothing to rate-limit, no CAPTCHA question to answer, no third
+  party receiving a stranger's message about Rik.
+
+**Consequences.**
+- `04-ACCESSIBILITY.md` §Forms and contact is struck as vestigial, retaining only the
+  requirement that the email address is always available as plain selectable text.
+- The email address appears as plain text, not obfuscated. Address obfuscation defeats
+  screen readers and copy-paste, and harvesting resistance is not worth that cost.
+- If a form is ever wanted, it needs a new ADR and an explicit exception to the
+  no-runtime-API-calls rule.
+
+---
+
+## ADR-042 — The `/` hero point-cloud is hand-written canvas inside the 5 KB budget
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25**
+
+**Context.** ADR-024 makes the `/` hero the only path into World Mode and requires a
+"living point-cloud element — animated, demonstrating Focus in miniature: haze
+resolving toward form, responding to the cursor." `06-PERFORMANCE.md` caps Document
+Mode at **≤ 5 KB gzipped client JS**, and invariant 10 says that number is never
+negotiable. `03-ART-DIRECTION.md` flagged the tension and deferred it. It could not stay
+deferred: this is the load-bearing composition of the whole project.
+
+**Options.** (a) Hand-written vanilla canvas 2D inside the budget. (b) A pre-rendered
+looping animation — video, animated SVG, or APNG — with zero JS. (c) CSS-only
+animation. (d) Raise Document Mode's budget — **forbidden**, invariant 10.
+
+**Decision.** (a). A small vanilla canvas 2D renderer, no framework, no dependency,
+sharing the budget with `prefs.ts`.
+
+**Why.** Only (a) keeps the cursor response, and the cursor response is the point. The
+hero's job is to *promise the mechanic*, and the mechanic is that the world answers the
+Witness's attention (Foreshadows F1 and F2). A loop that cannot be touched shows the
+aesthetic while withholding the one idea the site is about — which is precisely the
+"WebGL tech demo" failure `00-VISION.md` rejects. (c) cannot render hundreds of points
+without being slow and ugly.
+
+**The point positions cost no bytes.** Render the display text to an offscreen canvas
+in the already-loaded display face, read it back with `getImageData`, and take the
+pixels above an alpha threshold as the authored positions. No baked coordinate table
+ships, so the data cost is zero, and it is thematically exact — the hero becomes a
+miniature of Act 3, where a scatter of points is only legible as a name from the right
+vantage.
+
+**Budget discipline.** Roughly: ~1 KB for `prefs.ts`, the remainder for the hero. The
+implementing task must **measure the gzipped output and fail if the total exceeds
+5 KB.** No feature of the hero may be defended at the budget's expense.
+
+**The stated fallback, so nobody reaches for the budget instead.** If measurement shows
+5 KB cannot hold both, the hero degrades to option (b) — a pre-rendered loop — and the
+cursor response is lost. **The budget does not move.** Recording the fallback here
+means a future session facing a red size check has a decision already made rather than
+a temptation.
+
+**Consequences.**
+- The hero renderer is one self-contained, replaceable module (ADR-037 §3), since Rik
+  confirms visuals only by seeing them (ADR-011).
+- It must honour `reduced-motion` (static, resolved, no animation) and
+  `photosensitive-safe`, and must not be the reason `/` fails Lighthouse ≥ 98.
+- It is a `prefers-reduced-motion`-respecting decoration: nothing in it carries
+  information, so its absence costs no content.
+- A Phase 0 exit criterion already covers the judgement Rik must make (is the
+  invitation enticing); this ADR only settles the technique.
+
+---
+
+## ADR-043 — Mobile World Mode is the whole journey at reduced fidelity
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25** · **Completes ADR-038**
+
+**Context.** ADR-038 made mobile a first-class target and said the reduced World Mode
+feature set is "authored, not accidental" — but never said what the phone visitor
+actually gets. `06-PERFORMANCE.md` §Mobile listed which *effects* are off; nothing
+stated whether the *journey* is whole.
+
+**Options.** (a) All eight acts, every Station, reduced fidelity. (b) The Spine
+complete, but Alcoves and Mirror dioramas replaced by links into Document Mode.
+(c) A short taster — Void, Corridor, Name, Reach — with the Market and Climb collapsed.
+
+**Decision.** (a). **No act, Station, or narrative beat is cut on mobile.** What
+reduces is fidelity and population: point tier `low` or `minimal`, fewer stalls, fewer
+crowd figures, no bloom, no ambient cursor field (touch has no hover), narrower
+free-look clamps.
+
+**Why.** The site exists to deliver the Reach. A phone visitor who is routed away from
+the ending has not had a reduced experience, they have had a different and lesser one —
+which is the exact thing ADR-038 was written to forbid. (c) would also mean the Market
+and the Climb, which carry work history and education, are simply absent for a large
+share of visitors.
+
+**Consequences.**
+- **Testable, not aspirational:** every Station must be reachable and the Reach
+  operable on a mobile viewport, asserted in the e2e suite — not left to a device
+  check.
+- The Market stays the primary risk. Per `06-PERFORMANCE.md`, reduce stall and crowd
+  *count* before point density, because a sparse legible market beats a dense mush.
+- Mobile still needs its own answer for feeling alive, since the ambient cursor field
+  is unavailable: idle drift and the crowd carry it, plus a brief displacement on tap
+  (ADR-017, ADR-039).
+- The one-time dismissible desktop hint (ADR-038) stays a recommendation. It must never
+  read as an apology, because on this decision the phone version is not a lesser
+  version of the story.
+
+---
+
+## ADR-044 — The impression to optimise for: substance first, craft as the frame
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25**
+
+**Context.** `00-VISION.md` says the site "exists to make people want to work with Rik"
+but never says which of several true impressions to prioritise when they compete for the
+same space or the same effort. Without that, every layout argument is unresolvable.
+
+**Decision.** **Both, with craft as the frame.** Document Mode leads with concrete
+shipped work and its numbers; the site's own quality is the ambient argument for taste.
+
+**The operative tie-break, which is the point of this ADR:**
+
+- **In Document Mode, substance wins.** If a visual idea competes with getting a role,
+  a project, or a number in front of a skimmer faster, the visual idea loses. This is
+  the surface hiring decisions are made from.
+- **In World Mode, craft wins.** If content density competes with pacing or
+  composition, the content loses — it is already complete in the document, so nothing
+  is lost by the world showing less of it.
+- **Neither ever wins against legibility or accessibility.** Those are not in the
+  trade (`00-VISION.md` non-goals, `04-ACCESSIBILITY.md`).
+
+**Why.** A skimmer must get the substance, because most visitors are skimmers and the
+world is optional by construction (ADR-024). But substance alone reads as a good
+résumé, and a good résumé is not the differentiator — the differentiator is that the
+thing they are reading the résumé *in* is better than it needed to be. Numbers earn the
+interview; craft is why they remember which candidate it was.
+
+**Consequences.** Every requirement in the PRD traces to one of these two, and a
+requirement that serves neither is scope creep. The `/` hero is the one place both must
+be satisfied at once, which is why it is the hardest composition in the project
+(ADR-024, ADR-042).
+
+---
+
+## ADR-045 — The ending offers ways onward
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25**
+
+**Context.** `01-NARRATIVE.md` Act 8 ends with the camera pulling back, Focus falling
+away, a fade to a now-legible Void, and `Second Sight` written to local storage. Then
+the specification stops. Nothing states what is on screen at the end of the site — which
+left the most engaged visitor on the site, the one who actually finished, with a black
+rectangle and no route anywhere.
+
+**Decision.** The legible Void holds, and a small, unhurried set of ways onward fades
+in: **read the document, take the résumé, email Rik, or walk it again.**
+
+Constraints that keep this from becoming a splash screen:
+
+- **It fades in; it does not appear.** Spring-damped, slow, consistent with everything
+  else (`03-ART-DIRECTION.md` §Motion).
+- **No modal, no overlay, no "thanks for visiting," no share prompt, no auto-redirect.**
+- **No timer.** It arrives once the Return settles and then stays indefinitely,
+  like everything else in the site.
+- **`EMBER` only on the actionable items**, and they are actionable, so the Ember rule
+  is satisfied rather than bent.
+- The reframe line from the Reach persists. It is the last thing that should still be
+  readable.
+
+**Why.** This is the one place where "nothing prompts, nothing demands" would have cost
+the visitor something real rather than protecting them. The Figure never demanding the
+Reach is a *thesis* requirement — the gesture must be freely given. Offering a way out
+of a finished story is not a demand, and withholding it is not restraint, it is a dead
+end. Someone who has just spent ten minutes and felt something is also the single most
+likely person on the site to want the résumé.
+
+**Consequences.** Adds a small Phase 9 deliverable and its copy to the string
+catalogue. "Walk it again" resets `t` to 0 without clearing `Second Sight`, so a
+deliberate second walk gets the returning-visitor legibility immediately — which is the
+cheapest possible demonstration of ADR-047.
+
+---
+
+## ADR-046 — One privacy-respecting measurement, of the invitation only
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25** · **A narrow, explicit exception
+to the no-analytics rule in `11-AGENT-PROTOCOL.md`**
+
+**Context.** ADR-024 states plainly that the project's largest risk is a weak "Enter the
+world" invitation — "six months of work is unseen if this is weak" — and made it a
+Phase 0 **[R]** exit criterion. But `11-AGENT-PROTOCOL.md` forbids analytics outright,
+so the one number that would reveal whether the risk materialised could never be
+collected. The project was set up to build its load-bearing element permanently blind.
+
+**Decision.** Measure exactly one thing: **how many visits to `/` are followed by a
+visit to `/world`.** Nothing else.
+
+**Explicitly permitted:**
+- Counting requests to `/` and `/world` from the hosting platform's own server-side
+  request logs.
+
+**Explicitly forbidden, and this list is the boundary — not a starting point:**
+- **Any client-side script.** Document Mode's 5 KB JS budget is untouched by this, and
+  invariant 10 is not negotiable. If the platform cannot supply the count server-side,
+  **revisit with a new ADR rather than adding a script.**
+- Any third-party analytics service, tag manager, or pixel.
+- Cookies, `localStorage` used for measurement, device fingerprinting, or any
+  identifier that persists across visits.
+- Any personal data, IP retention beyond the platform's own defaults, session
+  recording, heatmaps, scroll tracking, or per-Station instrumentation.
+- Any measurement of what a visitor did *inside* the world. That is not the question.
+
+**Honest limitations, recorded so the number is not over-trusted.** Bots inflate page
+requests; CDN caching can hide them; the ratio says nothing about *why* someone did or
+did not click. It is a smoke alarm, not a dashboard.
+
+**Why.** The rule existed to keep the site free of surveillance, and this does not
+reintroduce any: no script, no cookie, no third party, no identifier, nothing about
+individuals. A count of two URLs from logs the host already keeps is a different kind of
+thing from analytics, and the alternative was building the project's highest-risk
+element with no feedback at all, forever.
+
+**Consequences.** `/accessibility` (or a short privacy note beside it) states plainly
+what is and is not counted. The no-analytics rule in `11-AGENT-PROTOCOL.md` gains a
+pointer to this ADR so it reads as a bounded exception rather than a loophole.
+
+---
+
+## ADR-047 — Second Sight is legibility only · ratified
+
+**Status:** ✅ **RATIFIED by Rik, 2026-08-25** · **Closes the last Open question**
+
+**Context.** Second Sight itself was confirmed by Rik in the 2026-08-23 review
+(Unconfirmed inventions #1, "I love the Second Sight concept"), but its *scope* was
+still marked unratified and had been left to Phase 9.
+
+**Decision.** **Legibility only. No new content, nothing unlocked, nothing explained.**
+The five changes in `01-NARRATIVE.md` §Second Sight stand as the complete list:
+
+1. Global Focus starts at 0.12 instead of 0.02.
+2. The `RIK` sculpture resolves from noticeably further away.
+3. The Figure's head is already slightly raised on arrival.
+4. Some Wardens' Mirrors already show the Witness before approach.
+5. One additional Market stall is legible that previously read as background.
+
+**Why.** Adding a genuinely new element on a second visit was considered and rejected:
+it converts the ending from *"it was always there"* into *"something was hidden,"* which
+is precisely the plot-twist reading ADR-002 chose against. The payoff has to be **"I can
+read it now"** — the visitor's own perception having changed — because that *is* the
+thesis. A hidden unlockable would be a better game and a worse statement.
+
+**Consequences.** Phase 9's exit criteria are unchanged and now fully specified:
+Second Sight changes legibility only, and clearing local storage restores the
+first-visit experience exactly. Any future proposal to add content behind a second visit
+needs an ADR that argues against ADR-002.
+
+---
+
+## ADR-048 — Every acceptance criterion is tagged MACHINE, INSTRUMENTED, or JUDGED
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25** · **Names and sharpens the existing
+`[R]` convention in `08-ROADMAP.md`; does not replace it**
+
+**Context.** The project already marks criteria needing Rik's eyes with **`[R]`**. That
+worked, but it conflated two different things — *"a human had to choose this number"* and
+*"a human has to look at this"* — and it said nothing about what a **task brief** may
+contain. A context-poor implementer handed an aesthetic acceptance criterion has two
+options, both bad: guess, or stall. Research into how experiential and game teams sign
+off on taste supplied the missing distinction.
+
+**Decision.** Every acceptance criterion, in the PRD and in every task brief, carries
+exactly one tag:
+
+| Tag | Meaning | Gates |
+|---|---|---|
+| **MACHINE** | CI asserts it. Binary. No human involved. | The diff. A red MACHINE criterion is a failed task. |
+| **INSTRUMENTED** | Measurable, but a human chose the threshold. The number lives in one place. | The diff. **Changing the threshold requires an ADR** — this is what stops a budget being "fixed" by raising it. |
+| **JUDGED** | Requires Rik's eye. Cannot be automated, now or later. | **Phase completion.** Equivalent to `[R]`. |
+
+**Three operating rules, which are the point of this ADR:**
+
+1. **A task brief may never contain a JUDGED criterion.** The brief's criterion is
+   *"produce this artifact"* — a screenshot set, a measurement, a page. The judgement
+   happens separately, with Rik, against that artifact. An implementer is never asked to
+   decide whether something feels right.
+2. **JUDGED does not block a diff.** Work proceeds; the judgement queues. Unreviewed
+   JUDGED items accumulate in `STATUS.md` under a **`PENDING JUDGEMENT`** list and are
+   settled before the phase is marked complete, not before the commit.
+3. **A failed JUDGED criterion resolves to exactly one of three outcomes** — retune (a
+   new value, recorded in an ADR), rescope (cut it), or accept as-is. Never an open
+   discussion, and never a silent pass.
+
+**Why `[R]` was kept as the gate rather than moved to release.** Blocking release
+instead of the phase was considered and rejected: `08-ROADMAP.md`'s central principle is
+that every phase ends in something deployed, so "release" is not a single event that a
+queue can drain against. Blocking the phase keeps the roadmap's meaning intact.
+
+**Consequences.**
+- `08-ROADMAP.md`'s `[R]` markers are unchanged and now read as "JUDGED."
+- The review gate in `11-AGENT-PROTOCOL.md` gains one step: confirm no brief smuggled in
+  a JUDGED criterion.
+- **Golden reference frames are deliberately not adopted yet.** Committing an approved
+  screenshot per Station and failing CI on drift would convert much of the JUDGED bucket
+  to MACHINE, and is the strongest available answer to the context-poverty problem — but
+  it depends on byte-identical determinism that has not been demonstrated. **Revisit
+  after Phase 1**, once the point cloud renders and the determinism harness is real.
+  Until then `05-ARCHITECTURE.md` stands: visual diffs are posted for Rik, not failed.
+  Do not adopt frame-gating unilaterally; it needs an ADR.
+
+---
+
+## ADR-049 — The site states an accessibility *target*, never a conformance claim
+
+**Status:** Accepted · **Decided by Rik, 2026-08-25**
+
+**Context.** `04-ACCESSIBILITY.md` sets "Target: WCAG 2.2 Level AA" and `/accessibility`
+is specified as a real, honest, public page. The open question was what that page is
+permitted to *say*. W3C's own evaluation methodology (WCAG-EM) states plainly that a
+sampling-based evaluation "does not result in being able to make WCAG 2 conformance
+claims" — and no evaluation of a site like this can be exhaustive.
+
+**Decision.** `/accessibility` says the site **targets WCAG 2.2 Level AA**, and carries
+a **known-gaps list**: what falls short, what has not been tested, and which preference
+to use for which need. It does **not** claim conformance.
+
+**Why.** Overclaiming on the one page whose entire value is candour would be the worst
+possible place to do it, and anyone qualified to check would notice. Stating a target
+plus real gaps is both more honest and more credible than a bare compliance badge.
+
+**Also recorded, because it changes what CI can promise.** The W3C's ACT Rules contain
+**no rules for WCAG 2.3 (Seizures)**. `axe-core` therefore cannot discharge invariant 11
+at all — the bespoke luminance/FFT check is not a belt-and-braces addition, it is the
+only automated thing standing behind the most photosensitivity-dangerous surface in the
+design. A future session must not delete it as redundant with axe.
+
+**Consequences.** The known-gaps list is a living part of the page, not a launch-day
+snapshot; anything discovered after launch is added rather than quietly fixed. The
+`/accessibility` copy is a Phase 0 deliverable drafted by Claude and reviewed by Rik
+specifically for honesty (content item #15).
+
+---
+
+## ADR-050 — A session is a phase. The orchestrator decomposes and dispatches in-session.
+
+**Status:** Accepted · **Decided by Rik, 2026-08-26** · **Extends ADR-020; supersedes the
+"1–3 tasks per session" shape in `11-AGENT-PROTOCOL.md`**
+
+**Context.** The first draft of the project's slash commands assumed a session boundary per
+*task*: one session to write briefs, then one session per brief. Rik rejected it. He is
+right, and the reason is worth recording because it is not obvious.
+
+A per-task session forces the **orchestrator** to re-orient from disk for every task — read
+`AGENTS.md`, `STATUS.md`, the PRD, the specification documents — and then throw that context
+away. That reintroduces the context-poverty problem at the one level where it is most
+expensive to have. The orchestrator's whole value is holding the specification in context;
+a per-task boundary destroys it repeatedly and pays the re-reading cost every time.
+
+**Decision.** **One session is one phase.** Within a single session the orchestrator:
+
+1. Orients and reconciles `STATUS.md` against the repository.
+2. Decomposes the phase into tasks, and gets Rik's approval on the decomposition.
+3. Writes a self-contained brief per task.
+4. Dispatches implementer agents, in parallel where file sets are disjoint.
+5. Reviews each returned diff against its acceptance criteria.
+6. Iterates, escalates, or re-scopes until the phase's tasks are done.
+7. Runs the phase's exit criteria, produces Rik's artifacts, rewrites `STATUS.md`.
+
+**Task granularity is still governed — by three things, none of which is review burden:**
+
+1. **Disjoint file sets.** Two agents may never touch the same file. This is the hard
+   constraint and it is what makes parallelism safe.
+2. **Failure isolation.** A failed task should implicate one coherent unit, not half the
+   phase.
+3. **One agent holding the thread.** A task an implementer cannot complete without losing
+   coherence is too big, regardless of its line count.
+
+**Diff-size targets are dropped.** The earlier ~150 source / ~150 test line target came from
+a code-review culture that does not apply here — this is a personal project and Rik does not
+review by line count. Keeping it would have caused tasks to be split for a reason nobody in
+this project cares about.
+
+**Unchanged, and load-bearing:**
+
+- **Briefs remain fully self-contained.** Implementers are still context-poor and still have
+  not read the specification. Nothing about ADR-020's context-poverty rule relaxes.
+- **Briefs are still written to `docs/tasks/`** rather than passed only as inline prompts.
+  They are the durable record, and they are how a session that dies mid-phase resumes.
+- **The review gate still runs on every diff.** An agent reporting success is evidence, not
+  proof.
+- **Escalation is unchanged:** a class-C task failing twice becomes class B on the capable
+  tier; a class-A/B task failing twice gets re-scoped into smaller tasks.
+
+**Consequences.**
+- `11-AGENT-PROTOCOL.md` §Session lifecycle §Typical shape is rewritten from "pick 1–3
+  tasks" to the seven steps above.
+- `/run-phase` becomes the primary command. `/implement-task` is demoted to a fallback for a
+  standalone task — a repair, or resuming after a session dies mid-phase.
+- **The dispatch mechanism this implies is settled by ADR-051.**
+
+---
+
+## ADR-051 — Codex implements; Claude reviews adversarially
+
+**Status:** Accepted · **Decided by Rik, 2026-08-26** · **Extends ADR-020 and ADR-050**
+
+**Context.** ADR-050 put a whole phase in one orchestrator session, which raised a question
+ADR-020 never answered concretely: *what actually executes a task brief?* Two candidates
+existed — Claude subagents (available immediately, but they cannot run the `gpt-5.6-*` models
+ADR-020's routing table names, so adopting them would have meant superseding that table) or
+the Codex CLI (preserves the routing exactly).
+
+**Decision.** **Both, in different roles.**
+
+1. **Codex CLI implements.** Routing stays exactly as ADR-020 specifies: `gpt-5.6-sol` for
+   classes A and B, `gpt-5.6-terra` for C and D, effort `high` by default. Shaders,
+   `engine/focus/`, `engine/spine/`, and `a11y/DomMirror` are class A regardless of apparent
+   size.
+2. **Claude reviews.** Every returned diff gets two passes: the orchestrator's own review
+   gate (`11-AGENT-PROTOCOL.md`), and an **independent Claude reviewer** that did not write
+   the code.
+
+**The reviewer is deliberately narrow.** A reviewer told to find problems will find some even
+when the work is sound, and the orchestrator then burns cycles on invented findings. So it is
+scoped to exactly three things:
+
+- **Correctness** — does it do what the brief said?
+- **Requirement coverage** — is every acceptance criterion actually met, and is any inlined
+  invariant violated?
+- **Quiet damage** — a weakened or deleted test, a silent dependency, a touched forbidden
+  file, a "fix" applied to something deliberate.
+
+It does **not** review style, naming, or architectural preference. Those belong to the code
+standards and to the orchestrator.
+
+**Why two passes rather than one.** Over a long build the main risk is not a bad diff, it is a
+*plausible* diff that passes its own tests and quietly breaks an invariant nobody re-checks.
+An agent reporting success is evidence, not proof — and the agent that wrote the code is the
+worst available judge of it.
+
+**Consequences.**
+- Higher token cost per task, accepted deliberately. The alternative is silent damage
+  accumulating across roughly eighty tasks.
+- The reviewer's findings are advisory. The orchestrator decides, and the reviewer never
+  edits code.
+- **Blocked:** the exact non-interactive Codex invocation is not recorded anywhere. Until Rik
+  supplies it, `/run-phase` cannot dispatch. **Do not guess a command line** — a wrong one
+  produces nothing and looks like an agent failure.
+
+---
+
 ## Unconfirmed inventions
 
 > **Added 2026-08-19 at Rik's request:** design decisions Claude made that Rik never
@@ -1656,11 +2135,19 @@ ascent's symbolism).
 
 ## Open questions
 
-Genuinely undecided. Do not guess — ask Rik.
+**None. All closed as of 2026-08-25.** New questions get appended here as they arise —
+and when one does, it goes here rather than being guessed at.
 
-- **How much does Second Sight change?** The feature is confirmed (Unconfirmed
-  invention #1). Its *scope* is still "legibility only, no new content" — reasonable to
-  leave until Phase 9, but not explicitly ratified.
+**Closed 2026-08-25:**
+- ~~How much does Second Sight change?~~ **Legibility only** — ratified, ADR-047.
+- ~~Is there a contact form?~~ **No** — address and links only, ADR-041.
+- ~~How does the hero point-cloud fit in 5 KB?~~ **Vanilla canvas, positions sampled
+  from rendered text**, ADR-042.
+- ~~What does a phone visitor get at `/world`?~~ **The whole journey, reduced
+  fidelity**, ADR-043.
+- ~~What is on screen at the very end?~~ **Ways onward**, ADR-045.
+- ~~How is the invitation's effectiveness measured, given no analytics?~~ **One
+  server-side count, no client script**, ADR-046.
 
 **Closed 2026-08-23:**
 - ~~Does the Market need crowd figures?~~ **Yes, required** (ADR-039). They carry the

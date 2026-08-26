@@ -20,8 +20,9 @@ Source: `resume-source.pdf` at the repo root. **Source material, not a deliverab
 — `/resume.pdf` is generated from the Content Graph (ADR-026).
 
 > **Privacy note.** The source PDF contains a phone number. The site excludes it
-> (ADR-028). If this repository is ever made public, **gitignore
-> `resume-source.pdf`** or strip the number first.
+> (ADR-028). `resume-source.pdf` is **gitignored** as of 2026-08-25 (ADR-034) and was
+> verified absent from the published tree. Keep it that way; the same applies to
+> `scratch.txt`.
 
 ### Available
 

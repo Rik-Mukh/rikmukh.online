@@ -82,22 +82,43 @@ the only working memory that survives. A session that does good work and leaves
 **6. Report honestly.** What passed, what failed with its output, what was skipped,
 what is blocked. Never round up.
 
-### Typical shape
+### Typical shape — one session is one phase (ADR-050)
 
 ```
-1. AGENTS.md → STATUS.md
-2. Build + tests. Reconcile reality against STATUS.md.
-3. Pick 1–3 unblocked tasks from docs/tasks/
-4. For each: write brief → route → dispatch → review → accept or return
-5. Run the phase's exit criteria if the phase looks complete
-6. Generate artifacts for anything Rik must judge
-7. Rewrite STATUS.md
-8. Report: Done / Failing / Blocked on Rik / Next
+1. AGENTS.md → STATUS.md → PRD-000 (list this phase's requirement IDs) → the phase in 08
+2. Build + tests. Reconcile reality against STATUS.md. The repo wins.
+3. Decompose the phase into tasks. Get Rik's approval on the decomposition.
+4. Write a self-contained brief per task into docs/tasks/
+5. Dispatch implementers wave by wave — disjoint file sets within a wave
+6. Review every returned diff against the review gate. Accept, return, or escalate.
+7. Run the phase's exit criteria
+8. Generate artifacts for anything Rik must judge
+9. Rewrite STATUS.md
+10. Report: Done / Failing / Blocked on Rik / Next
 ```
+
+Run this with `/run-phase <n>`. `/implement-task <id>` is the fallback for a standalone
+task — a repair, or resuming after a session died mid-phase.
+
+**Why the phase is the session boundary.** A per-task boundary forces the *orchestrator*
+to re-read the specification for every task and then discard it, which reintroduces
+context-poverty at the level where it is most expensive. Holding the phase in context for
+its whole duration is the orchestrator's entire advantage.
 
 Prefer finishing a few tasks completely over starting many. A half-finished task is
 worse than an unstarted one, because the next session must reconstruct intent from a
 partial diff.
+
+### Task granularity (ADR-050)
+
+Three criteria, and **review burden is not one of them** — diff-size targets were
+considered and dropped, because Rik does not review this project by line count.
+
+1. **Disjoint file sets.** Two agents may never touch the same file. Hard constraint; it
+   is what makes parallel dispatch safe. Otherwise, separate waves or separate worktrees.
+2. **Failure isolation.** A failed task should implicate one coherent unit.
+3. **One agent holding the thread.** A task an implementer cannot finish without losing
+   coherence is too big, whatever its size.
 
 ---
 
@@ -125,7 +146,10 @@ Inlined, with the reason. Example:
     narrative design, not a bug. Do not "fix" it.
 
 ## Acceptance criteria
-Numbered, individually verifiable, each with the command that proves it.
+Numbered, individually verifiable, each with the command that proves it, and each
+tagged **MACHINE** or **INSTRUMENTED** (ADR-048). **Never JUDGED** — if this task
+produces something only Rik can assess, the criterion is "the artifact exists at
+`artifacts/<phase>/<name>.png`", not "it looks right."
 
 ## How to verify
 Exact commands, in order.
@@ -191,6 +215,10 @@ Non-negotiable. **The orchestrator verifies; it does not trust.**
 4. Check no forbidden file was touched.
 5. Check no test was weakened, skipped, or deleted. Diff the test count.
 6. Check no dependency was added silently — inspect `package.json`.
+7. Check the brief itself carried **no JUDGED criterion** (ADR-048). An implementer
+   cannot satisfy "does this feel right" and will guess or stall. A brief asks for the
+   *artifact*; Rik supplies the judgement separately. If one slipped in, that is an
+   orchestrator error, not the agent's.
 
 An agent reporting success is **evidence, not proof.** Over a long build this gate is
 the main defence against accumulating quiet damage.
@@ -308,7 +336,11 @@ carry a bracketed reason. Do not implement them; do not delete them either.
   A red test is information; deleting it destroys information.
 - Raise a performance budget without an ADR. Never raise Document Mode's.
 - Invent biographical content, dates, employers, or project outcomes.
-- Add analytics, third-party scripts, or runtime API calls.
+- Add analytics, third-party scripts, or runtime API calls. **One bounded exception
+  exists** — ADR-046 permits counting `/` and `/world` requests from the host's own
+  server-side logs, with **no client script, no cookie, no third party, and no
+  identifier.** Read that ADR before touching this; its forbidden list is the boundary,
+  not a starting point.
 - Commit or push unless Rik asked. Branch rather than committing to the default branch.
 - Silently reverse a decision in `09-DECISIONS.md`.
 - Treat an **`UNRATIFIED`** or **`Claude's call`** ADR as immovable. Check the status

@@ -29,9 +29,17 @@ old detection logic unnecessary.
 Target: **WCAG 2.2 Level AA**, plus the additional commitments below, which go
 beyond it.
 
+**The site states a target, never a conformance claim** (ADR-049). W3C's own evaluation
+methodology says a sampling-based evaluation cannot support a conformance claim, and no
+evaluation of a site like this is exhaustive. `/accessibility` therefore says the site
+*targets* AA and carries a real known-gaps list. Overclaiming on the one page whose whole
+value is candour would be the worst possible place to do it.
+
 ## Modes
 
-Two renderers, and six orthogonal preferences that apply to both.
+Two renderers, and seven orthogonal preferences that apply to both. (`audio` is the
+seventh; it persists and is surfaced from Phase 0 but controls nothing until the
+optional Phase 11 exists — ADR-025.)
 
 | Preference | Default | Detected from |
 |---|---|---|
@@ -160,6 +168,28 @@ luminance flicker very easy to create.
   current tier, and **halve parallax amplitude on layered screens under
   `photosensitive-safe`.**
 
+### The threshold, numerically — so the test is specifiable
+
+From WCAG 2.2 Understanding SC 2.3.1. These are the numbers the bespoke check implements:
+
+- A **general flash** is *a pair of opposing changes in relative luminance of ≥10% of
+  maximum relative luminance (1.0)*, where the relative luminance of the **darker** state
+  is **below 0.80**. Above that darker-state threshold it is not a flash at all.
+- **Area exemption:** a flash occupying no more than **0.006 steradians within any 10°
+  visual field** is exempt — in density-independent terms a **341 × 256 CSS px rectangle
+  (87,296 CSS px²)**, since a CSS pixel is roughly 0.0213°.
+- **Content flashing three or fewer times per second passes automatically**, and needs no
+  tool at all. Every ramp in this site is designed to sit in that region, which is why the
+  ≥800ms Reach ramp passes by construction. The test exists to prove it *stays* there.
+- Because flashing can disrupt the whole page, **every part of the page must satisfy
+  this** (WCAG Conformance Requirement 5, Non-Interference). That is why invariant 11 is
+  correctly scoped as "anywhere."
+
+**`axe-core` cannot check any of this.** The W3C's ACT Rules contain **no rules for
+WCAG 2.3 (Seizures)** at all (ADR-049). The bespoke luminance/FFT check is therefore not
+redundant with axe — it is the only automated thing standing behind the most dangerous
+surface in the design. **Do not delete it as duplicative.**
+
 **This must be verified programmatically, not by eye.** See §Verification — a
 bespoke FFT check in CI, plus PEAT as an independent manual cross-check.
 
@@ -207,12 +237,22 @@ bespoke FFT check in CI, plus PEAT as an independent manual cross-check.
   uses system colours.
 - Legible at 200% zoom and at 400% with reflow, per WCAG 1.4.10.
 
-## Forms and contact
+## Contact
 
-- Real `<label>` elements, never placeholder-as-label.
-- Errors identified in text, adjacent to the field, and announced.
-- No CAPTCHA. If spam protection is needed, use a honeypot or rate limiting.
-- Email address is always available as plain selectable text as well.
+**There is no form** (ADR-041). Contact is an email address plus GitHub and LinkedIn
+links, in both renderers.
+
+- The email address is **plain, selectable text** — never obfuscated, never
+  image-rendered, never assembled by JavaScript. Obfuscation defeats screen readers and
+  copy-paste, and harvesting resistance does not justify that cost.
+- Links have accessible names that make sense out of context: "GitHub — Rik-Mukh", not
+  "click here".
+
+~~- Real `<label>` elements, never placeholder-as-label.~~
+~~- Errors identified in text, adjacent to the field, and announced.~~
+~~- No CAPTCHA. If spam protection is needed, use a honeypot or rate limiting.~~
+**[Struck by ADR-041. These presupposed a form that submits somewhere, which the static
+architecture forbids — no runtime API calls. Reinstate only if an ADR ever adds a form.]**
 
 ## Accessibility statement
 
@@ -284,5 +324,6 @@ Flag as `BLOCKED: needs review`; never mark these done from a build session.
 4. Both manual screen-reader passes are signed off by Rik.
 5. The PEAT cross-check has been run, or its absence is recorded in the
    accessibility statement as a known gap.
-6. `/accessibility` is published, accurate, and honest about its gaps.
+6. `/accessibility` is published, states a **target** rather than a conformance claim,
+   and carries a real known-gaps list (ADR-049).
 7. No preference combination produces a broken or unusable state.

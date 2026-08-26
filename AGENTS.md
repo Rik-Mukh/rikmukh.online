@@ -50,8 +50,9 @@ citing documents. See `docs/11-AGENT-PROTOCOL.md` §The context-poverty rule.
 | Before adding any dependency | `docs/12-DEPENDENCIES.md` — what to lift vs. build |
 | Before writing any code | `docs/13-CODE-STANDARDS.md` — naming, imports, TS, React/R3F, strings, tests; inline the relevant rules into the task brief |
 | Needing content | `docs/07-CONTENT-INVENTORY.md` |
-| Planning work | `docs/08-ROADMAP.md`, then `docs/prd/` and `docs/tasks/` *(neither exists yet)* |
-| Building any Station's look | `docs/storyboard/SHOT-LIST.md` — ⚠️ **known-stale**, pre-ADR-033 vocabulary, re-theming on hold |
+| **What the finished site must be** | `docs/prd/PRD-000-the-website.md` — the one PRD. Requirement IDs, acceptance criteria, the JUDGED set, out-of-scope. **Cite its IDs in every task brief and test.** |
+| Planning work | `docs/08-ROADMAP.md` for phase order, then `docs/tasks/` *(does not exist yet)* |
+| Building any Station's look | `docs/03-ART-DIRECTION.md` §Visual language and §Per-act forms. Anything Rik must judge is produced as an artifact and reviewed by him (ADR-048) — never guessed at. |
 
 Documents are numbered in dependency order. `00`–`08` are the specification, `09` is
 the decision log, `10`–`13` are meta.
@@ -136,9 +137,17 @@ npm run shots        # deterministic Station screenshots → artifacts/
 ## Current state
 
 **Phase 0 begun.** The Astro project is scaffolded (react + mdx + sitemap, TS strict,
-Node pinned to 22 via `mise.toml`/`.nvmrc`). Real Document Mode content, `docs/prd/`, and
-`docs/tasks/` are not built yet. Git history is on the `Rik-Mukh/rikmukh.online` remote,
-with the old Next.js v2 preserved on branch `legacy/v2-nextjs` (ADR-034).
+Node pinned to 22 via `mise.toml`/`.nvmrc`). **`docs/prd/PRD-000-the-website.md` now exists
+and is the specification of the finished site.** Real Document Mode content and
+`docs/tasks/` are not built yet.
+
+**Every acceptance criterion carries a tag** (ADR-048): **MACHINE** (CI asserts it,
+gates the diff), **INSTRUMENTED** (a human chose the threshold; moving it needs an ADR;
+gates the diff), or **JUDGED** (needs Rik; gates phase completion). **A task brief may
+never contain a JUDGED criterion** — ask for the artifact and let Rik judge it.
+
+Git history is on the `Rik-Mukh/rikmukh.online` remote, with the old Next.js v2 preserved
+on branch `legacy/v2-nextjs` (ADR-034).
 
 This file is `AGENTS.md`; `CLAUDE.md` is a symlink to it, so Claude Code, Codex, and any
 other agent read the same orientation.

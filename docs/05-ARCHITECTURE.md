@@ -32,10 +32,13 @@ Rationale and migration path: ADR-008.
                  ▼                           ▼
         ┌────────────────┐          ┌──────────────────┐
         │ Document Mode  │          │   World Mode     │
-        │  ~0 KB JS      │          │  one R3F island  │
-        │  /doc/**       │          │  /               │
+        │  ≤ 5 KB JS     │          │  one R3F island  │
+        │  /  and /doc/**│          │  /world          │
         └────────────────┘          └──────────────────┘
 ```
+
+Routing per **ADR-024**: `/` is Document Mode and is never auto-redirected. See
+§Routing.
 
 **The derivation invariant:** the World Mode Station manifest is *generated* from
 the Content Graph at build time. A Station without a content entry fails the
@@ -84,8 +87,9 @@ website/
 │  ├─ styles/
 │  │  └─ tokens.css           ← palette + type. ONLY place colours are defined.
 │  └─ pages/
-│     ├─ index.astro          ← World Mode
-│     ├─ doc/[...slug].astro  ← Document Mode
+│     ├─ index.astro          ← Document Mode: the hero + the document. THE DEFAULT.
+│     ├─ world.astro          ← World Mode: mounts the single R3F island
+│     ├─ doc/[...slug].astro  ← Document Mode: one role, project, or education entry
 │     └─ accessibility.astro
 └─ tests/
    ├─ unit/
@@ -232,8 +236,6 @@ must be testable headlessly, because Foreshadow F6 has to be enforced by a test.
 
 ## Routing
 
-| URL | Serves |
-|---|---|
 Revised by **ADR-024** — Document Mode is the default.
 
 | URL | Serves |
@@ -279,11 +281,16 @@ is the most likely performance mistake in the codebase.
 | Flicker | Playwright | frame luminance sampling + FFT, 3Hz cap |
 | Perf | Playwright + CDP | `06-PERFORMANCE.md` budgets |
 
-**Determinism requirement.** For visual and flicker tests to work, the world must
-be reproducible: seed all randomness, and make the animation clock injectable so
-tests can step frames rather than wall-clock wait. Build this in from Phase 1 — it
-is very painful to retrofit, and without it a looped build session has no eyes at
-all.
+**Determinism requirement.** For visual and flicker tests to work, the world must be
+reproducible. **Seed all randomness app-side** — build this in from Phase 1; it is
+very painful to retrofit, and without it a looped build session has no eyes at all.
+
+**Time needs no engine-side work.** ~~Make the animation clock injectable so tests can
+step frames rather than wall-clock wait.~~ **[Superseded by ADR-026 — Playwright's
+Clock API overrides `requestAnimationFrame`, `performance`, `Date`, and all timers
+from the test side, and `pauseAt` + `runFor` gives true frame-stepping. The engine
+therefore uses `requestAnimationFrame` normally. Less code, cleaner engine. Do not
+add an injectable clock.]**
 
 ## CI
 

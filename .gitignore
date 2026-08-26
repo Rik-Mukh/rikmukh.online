@@ -26,6 +26,8 @@ pnpm-debug.log*
 # project-private — never commit (ADR-028, and Rik's personal workspace)
 # resume-source.pdf: contains a phone number the site excludes
 # scratch.txt: Rik's private notes — explicitly not for agents
+# docs/storyboard/: Rik's own visual planning. Not an agent input, not a specification.
 resume-source.pdf
 scratch.txt
+docs/storyboard/
 .tmp-*

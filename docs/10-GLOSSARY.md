@@ -98,9 +98,11 @@ Normalized position along the Spine. The primary state variable of the entire
 experience. Almost everything is a function of `t`.
 
 **Station**
-An authored stop on the Spine. Owns a `t` range, a camera framing, a content
-reference, its interactions, its audio layer, and its accessibility label.
-Stations are the unit of navigation, of content, and of accessible traversal.
+An authored stop on the Spine. Owns a `t` range, a `scrollGain`, a camera framing, a
+content reference, its interactions, its Alcoves, and its accessibility label plus a
+required `a11y.description` of its visual state. (No audio layer — ADR-025 removed
+that field from the Station contract.) Stations are the unit of navigation, of
+content, and of accessible traversal.
 
 **Alcove**
 An optional detour off the Spine. Entered by choice, always returns to the exact

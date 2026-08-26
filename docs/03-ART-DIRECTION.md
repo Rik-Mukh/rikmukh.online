@@ -347,9 +347,13 @@ The most important composition in the project after the Reach, because it is the
 Constraints that keep it from becoming a generic landing page: no navigation menu,
 no scrolling within the hero, no marketing copy, no feature list. One screen.
 
-The point-cloud must run inside Document Mode's **~5 KB JS budget** or be a
-pre-rendered animation. This is a real constraint, not a suggestion — check it
-against `06-PERFORMANCE.md` before choosing an implementation.
+**Settled by ADR-042:** vanilla canvas 2D, no framework, no dependency, sharing the
+**5 KB** Document Mode JS budget with `prefs.ts`. Point positions are sampled from text
+rendered to an offscreen canvas in the display face and read back with `getImageData`,
+so no coordinate table ships and the data cost is zero — a miniature of Act 3, where a
+scatter of points is only legible as a name from the right vantage. If the measured
+gzipped total exceeds 5 KB the hero degrades to a pre-rendered loop and loses the cursor
+response; **the budget does not move** (invariant 10).
 
 ### The document body
 

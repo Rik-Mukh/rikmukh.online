@@ -35,9 +35,15 @@ Figure is genuinely cold again.
 All of these values live in the Content Graph as data and are expected to be
 re-tuned once the world is walkable. Tuning them touches one file, not code.
 
+**The table above is the only authoritative source for `t`.** The per-act headings
+below mirror it for convenience; if they ever disagree, the table wins and the heading
+is a bug. (They did disagree — the headings carried the pre-ADR-016 set until
+2026-08-25.) Once the Content Graph exists, both are derived from it and neither is
+canonical.
+
 ---
 
-## Act 0 — The Void · `t 0.00–0.06`
+## Act 0 — The Void · `t 0.00–0.05`
 
 Pure `VOID`. Perhaps forty points drifting, barely above the black. No horizon, no
 scale reference, no orientation cue. The Witness cannot tell whether this is a
@@ -60,18 +66,23 @@ Far off, a smudge of light. Not a shape. A suggestion that direction exists.
 
 ---
 
-## Act 1 — The Approach · `t 0.06–0.18`
+## Act 1 — The Approach · `t 0.05–0.13`
 
 Focus climbs 0.08 → 0.40. The haze *differentiates* without becoming legible:
 regions of density appear, some points move with apparent parallax, but no form
 resolves. This is the "opening your eyes after a long sleep" state from the brain
 dump, and it should be held longer than feels comfortable.
 
-Audio, if enabled, is heavily low-passed — muffled, as if heard through a wall.
+~~Audio, if enabled, is heavily low-passed — muffled, as if heard through a wall.
 The filter cutoff opens in lockstep with global Focus for the entire site. A
 Witness who cannot see perceives the same resolving-into-clarity beat through
 sound alone. This is the site's most important accessibility mechanic and it is
-also its best sound-design idea; the two are the same thing.
+also its best sound-design idea; the two are the same thing.~~
+**[Retracted by ADR-025. Audio is descoped, and the accessibility claim was wrong:
+background audio degrades screen-reader speech, site audio is off by default, and a
+filter sweep only reads as "blur resolving" to someone who already knows the visual
+metaphor. What serves non-visual Witnesses is each Station's `a11y.description` —
+a sentence describing the visual state. Do not re-propose this.]**
 
 The Witness begins to sense enclosure before seeing any wall — density above and
 to the sides, sparseness ahead.
@@ -81,7 +92,7 @@ to the sides, sparseness ahead.
 
 ---
 
-## Act 2 — The Corridor · `t 0.18–0.30`
+## Act 2 — The Corridor · `t 0.13–0.24`
 
 **The snap.** At `t ≈ 0.13`, over roughly 900ms, the points *click* into their
 authored positions. This is the only hard snap in the entire site — everything
@@ -100,7 +111,7 @@ Held breath. It pays off in Act 4.
 
 ---
 
-## Act 3 — The Name · `t 0.30–0.36`
+## Act 3 — The Name · `t 0.24–0.28`
 
 `RIK` as an anamorphic point sculpture. From every position except one it is
 abstract debris hanging in the corridor. At `t = 0.26` exactly, it resolves into
@@ -117,12 +128,13 @@ way in, after a cold open. That is anime OP structure.
 
 ---
 
-## Act 4 — The Market · `t 0.36–0.60`
+## Act 4 — The Market · `t 0.28–0.62`
 
 **The reveal.** Focus jumps to 0.90 and the Corridor's walls resolve into what
 they always were: stalls. The camera's containment drops away, scale explodes
-outward and upward, and sound blooms — crowd, warmth, life, the low-pass filter
-fully open. Cold to warm in one beat.
+outward and upward, and the crowd, the warmth, and the life bloom at once — carried
+entirely by density and light temperature, because there is no audio (ADR-025). Cold
+to warm in one beat.
 
 This is the largest Station and the most content-dense. A market is where you
 exchange your labour, which is why the work history lives here and not in a list.
@@ -173,7 +185,7 @@ the exact `t` it was entered from.
 
 ---
 
-## Act 5 — The Climb · `t 0.60–0.70`
+## Act 5 — The Climb · `t 0.62–0.72`
 
 The Market thins. Ahead, stepped architecture — **a stepwell, ascended** (ADR-033):
 criss-crossing symmetric flights, wide at the base, climbing out of the dark. Each
@@ -182,14 +194,14 @@ because Rik graduates in 2027 (ADR-028).
 
 ~~a Mayan-pyramid and colosseum hybrid~~ **[Superseded by ADR-033's visual language.]**
 
-Crowd audio thins with the crowd. Warmth drains out of the light. The tonal floor
+The crowd thins. Warmth drains out of the light. The tonal floor
 drops here and does not come back up until Act 8. Global Focus dips very slightly
 — 0.90 → 0.85 — and does not fully recover until the Reach. The world is holding
 something back.
 
 ---
 
-## Act 6 — The Wardens and the Mirrors · `t 0.70–0.84`
+## Act 6 — The Wardens and the Mirrors · `t 0.72–0.85`
 
 A ring of Wardens on the upper plateau, each holding a Mirror. Almost human:
 proportions slightly wrong, faces unresolved. They do not move except to turn
@@ -209,7 +221,7 @@ down.
 
 ---
 
-## Act 7 — The Figure and The Reach · `t 0.84–0.95`
+## Act 7 — The Figure and The Reach · `t 0.85–0.96`
 
 **At distance.** The Figure is dejected. Head down, shoulders forward, one hand
 slack across a knee. It is visibly *unfinished* — a persistent fraction of its
@@ -231,8 +243,8 @@ leave. **This must not be softened.** A demanded gesture is not a gesture, and t
 whole thesis collapses if the site insists.
 
 **On contact.** `EMBER` floods outward from the point of contact. Every particle
-in the world reaches Focus 1.0 and holds for one long beat. The score's final
-layer enters. Then everything settles.
+in the world reaches Focus 1.0 and holds for one long beat. Then everything settles.
+(No score — audio is descoped, ADR-025. The climax carries on visuals alone.)
 
 > **Safety constraint, non-negotiable.** The Ember flood is a **ramp of ≥800ms**,
 > never a flash. This is the single most photosensitivity-dangerous moment in the
@@ -243,7 +255,7 @@ as the reach continuing outward rather than as a form.
 
 ---
 
-## Act 8 — The Return · `t 0.95–1.00`
+## Act 8 — The Return · `t 0.96–1.00`
 
 The camera pulls back and up, and the whole Spine becomes visible at once, lit:
 Void, Corridor, Name, Market, Climb, plateau, Figure. It was one object the entire
@@ -254,6 +266,17 @@ Then Focus falls away and it fades to the Void. The same first frame. But now th
 points are legible, and it is obvious they always were.
 
 `Second Sight` is written to local storage here.
+
+**Then the ways onward (ADR-045).** The legible Void holds, and a small, unhurried set
+of options fades in — read the document, take the résumé, email Rik, or walk it again —
+with the reframe line still readable. Spring-damped, no modal, no timer, no
+"thanks for visiting," no auto-redirect. `EMBER` on the actionable items only.
+
+This is not a softening of "nothing prompts, nothing demands." The Figure never
+demanding the Reach is a thesis requirement — that gesture must be freely given.
+Offering a way out of a *finished* story is not a demand, and withholding it would be a
+dead end rather than restraint. "Walk it again" resets `t` to 0 **without** clearing
+`Second Sight`, so the second walk is immediately more legible.
 
 ---
 
@@ -303,7 +326,8 @@ as a bug. The world is literally, measurably incomplete until the Reach.
 "Copy" means **the written words that appear on screen** — an advertising and
 design term, nothing to do with duplication. There is **no narrator and no spoken
 voice anywhere in the site.** All text is silent, on screen, and in Rik's first
-person. Audio carries score and diegetic sound only (`03-ART-DIRECTION.md`).
+person. ~~Audio carries score and diegetic sound only (`03-ART-DIRECTION.md`).~~
+**[Audio is descoped entirely — ADR-025. There is no score and no diegetic sound.]**
 
 The budget below covers **narrative copy only** — the authored, literary lines that
 carry the story. It is deliberately severe, because the site's job is to say things

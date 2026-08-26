@@ -80,9 +80,11 @@ Deliverables:
 - `src/engine/particles/` — GPGPU simulation, point material, GLSL.
 - `src/engine/focus/` — pure, headlessly testable Focus composition.
 - `src/engine/spring.ts` — the one animation primitive.
-- Determinism harness: seeded randomness, injectable clock
-  (`05-ARCHITECTURE.md` §Testing). **Build this now; retrofitting is painful and
-  without it later sessions are blind.**
+- Determinism harness: seeded randomness app-side (`pure-rand` or `seedrandom`).
+  **Time needs no engine-side work** — Playwright's Clock API controls it from the
+  test side (ADR-026), so the engine uses `requestAnimationFrame` normally.
+  **Build the seeding now; retrofitting is painful and without it later sessions
+  are blind.**
 - Device tier detection and adaptive point budget with hysteresis.
 
 Ship: a standalone page with one baked subject that resolves from haze to form as
@@ -224,8 +226,9 @@ Exit criteria:
 The largest, warmest, most expensive phase. Where the Fun budget is spent.
 
 Deliverables:
-- The reveal at `t = 0.36`: Corridor walls resolve into stalls, scale explodes,
-  audio blooms.
+- The reveal at `t = 0.28`: Corridor walls resolve into stalls and scale explodes.
+  Warmth arrives through density and light temperature only — there is no audio
+  (ADR-025).
 - One stall per role, driven by the Content Graph.
 - Vendor figures with lines.
 - Fun budget in full: pokeable wares, the stall selling nothing, the discounted
@@ -254,7 +257,8 @@ density, cooling light, the global Focus dip to 0.85.
 Exit criteria:
 - [ ] Tiers generated from education content
 - [ ] Focus dip present and asserted by test — it is Foreshadow F6, not a bug
-- [ ] Audio layers strip away with the crowd
+- [ ] Density thins and light cools measurably across the Climb — the warmth drain
+      is carried visually, since audio is descoped (ADR-025)
 - [ ] **[R]** Rik confirms the tonal cool-down works
 
 ---
@@ -276,10 +280,13 @@ site may depend on audio** — the site must be complete and excellent silent.
 ## Phase 9 — The Return and Second Sight
 
 Deliverables: pull-back revealing the whole Spine lit; `RIK` legible from the new
-angle; fade to a legible Void; `Second Sight` persistence and its five legibility
-changes.
+angle; fade to a legible Void; the **ways onward** — document, résumé, email, walk it
+again (ADR-045); `Second Sight` persistence and its five legibility changes (ADR-047).
 
 Exit criteria:
+- [ ] The ways onward fade in after the Return settles, with no modal, no timer, and
+      no auto-redirect; `EMBER` appears only on the actionable items
+- [ ] "Walk it again" resets `t` to 0 without clearing `Second Sight`
 - [ ] Second Sight changes legibility only — no new content, nothing unlocked
 - [ ] Clearing local storage restores the first-visit experience exactly
 - [ ] The whole Spine is visible in one frame within the point budget
