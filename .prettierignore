@@ -1,0 +1,11 @@
+dist/
+.astro/
+package-lock.json
+public/
+*.pdf
+.claude/
+AGENTS.md
+docs/
+idea.md
+REVIEW.md
+src/pages/index.astro

@@ -1,0 +1,16 @@
+{
+  "extends": ["stylelint-config-standard"],
+  "allowEmptyInput": true,
+  "rules": {
+    "color-no-hex": true
+  },
+  "overrides": [
+    {
+      "files": ["src/styles/tokens.css"],
+      "rules": {
+        "color-no-hex": null,
+        "color-hex-length": null
+      }
+    }
+  ]
+}

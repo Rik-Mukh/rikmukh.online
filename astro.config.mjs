@@ -7,5 +7,6 @@ import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
-  integrations: [react(), mdx(), sitemap()]
+  site: 'https://rikmukh.online',
+  integrations: [react(), mdx(), sitemap()],
 });

@@ -23,6 +23,11 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 
+test-results/
+playwright-report/
+.lighthouseci/
+artifacts/
+
 # project-private — never commit (ADR-028, and Rik's personal workspace)
 # resume-source.pdf: contains a phone number the site excludes
 # scratch.txt: Rik's private notes — explicitly not for agents
